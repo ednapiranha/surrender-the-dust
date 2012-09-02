@@ -109,6 +109,10 @@ body {
     -moz-animation: walk-opp .3s steps(2, end) infinite;
 }
 
+.target {
+    cursor: pointer;
+}
+
 @-webkit-keyframes anim {
     from { background-position: 0px; }
     to { background-position: -199px; }
