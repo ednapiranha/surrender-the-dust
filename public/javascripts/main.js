@@ -1,6 +1,16 @@
 'use strict';
 
-$(function() {
+requirejs.config({
+  baseUrl: '/javascripts/lib',
+  enforceDefine: true,
+  paths: {
+    jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min'
+  }
+});
+
+define(['jquery', 'movement'],
+  function($, movement) {
+
   var currentUser;
   var loginForm = $('form#login-form');
 
@@ -15,5 +25,11 @@ $(function() {
       loginForm.submit();
     },
     onlogout: function() { }
+  });
+
+  var target = $('.target');
+
+  target.click(function() {
+    movement.move($(this));
   });
 });

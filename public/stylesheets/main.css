@@ -24,7 +24,7 @@ time, mark, audio, video {
     vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
     display: block;
 }
@@ -45,4 +45,93 @@ q:before, q:after {
 table {
     border-collapse: collapse;
     border-spacing: 0;
+}
+
+body {
+
+}
+
+/* General Dashboard */
+#dashboard {
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    width: 1800px;
+}
+
+/* Characters */
+.character {
+    position: absolute;
+}
+
+@-webkit-keyframes walk {
+    from { background-position: -4px; }
+    to { background-position: -118px; }
+}
+
+@-moz-keyframes walk {
+    from { background-position: -4px; }
+    to { background-position: -118px; }
+}
+
+.protagonist {
+    background-image: url('/images/characters/protagonist.png');
+    background-repeat: no-repeat;
+    background-position: -4px;
+    height: 188px;
+    left: 530px;
+    top: 300px;
+    width: 54px;
+}
+
+.protagonist.active {
+    -webkit-animation: walk .3s steps(2, end) infinite;
+    -moz-animation: walk .3s steps(2, end) infinite;
+}
+
+@-webkit-keyframes walk-opp {
+    from { background-position: -63px; }
+    to { background-position: 50px; }
+}
+
+@-moz-keyframes walk-opp {
+    from { background-position: -63px; }
+    to { background-position: 50px; }
+}
+
+.protagonist.opposite {
+    background-image: url('/images/characters/protagonist-opposite.png');
+    background-position: -63px;
+}
+
+.protagonist.opposite.active {
+    -webkit-animation: walk-opp .3s steps(2, end) infinite;
+    -moz-animation: walk-opp .3s steps(2, end) infinite;
+}
+
+@-webkit-keyframes anim {
+    from { background-position: 0px; }
+    to { background-position: -199px; }
+}
+
+@-moz-keyframes anim {
+    from { background-position: 0px; }
+    to { background-position: -199px; }
+}
+
+.bot-249AD {
+    -webkit-animation: anim .2s steps(2, end) infinite;
+    -moz-animation: anim .2s steps(2, end) infinite;
+    background-image: url('/images/characters/bot-249AD.png');
+    background-repeat: no-repeat;
+    left: 230px;
+    top: 300px;
+    height: 175px;
+    width: 100px;
+}
+
+/* Scene: Snowy Mountains */
+.snowy-mountains {
+    background-image: url('/images/scenes/snowy-mountains.jpg');
+    background-repeat: no-repeat;
 }

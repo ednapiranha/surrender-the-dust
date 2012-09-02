@@ -7,7 +7,7 @@ module.exports = function(app, db, nconf, isLoggedIn) {
       if (email) {
         req.session.email = email;
       }
-      res.redirect('/');
+      res.redirect('/dashboard');
     });
   });
 
