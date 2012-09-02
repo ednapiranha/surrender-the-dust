@@ -11,7 +11,8 @@ define(['jquery'], function ($) {
     protagonist.addClass('active');
     protagonist.animate({
       left: newX
-    }, actionLength, function() {
+    },
+    actionLength, 'linear', function() {
       protagonist.removeClass('active');
       isRunning = false;
     });
@@ -33,6 +34,8 @@ define(['jquery'], function ($) {
           if (difference > 45) {
             newX = newX - 45;
             walkAcross(newX, actionLength);
+          } else {
+            isRunning = false;
           }
         } else {
           var difference = currX - newX;
@@ -42,6 +45,8 @@ define(['jquery'], function ($) {
           if (difference > 90) {
             newX = newX + 90;
             walkAcross(newX, actionLength);
+          } else {
+            isRunning = false;
           }
         }
       }
