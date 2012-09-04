@@ -11,7 +11,7 @@ requirejs.config({
 define(['jquery', 'movement'],
   function($, movement) {
 
-  var viewport = $('#viewport');
+  var viewport = $('.target, #viewport');
   var target = $('.target');
 
   viewport.click(function(ev) {
