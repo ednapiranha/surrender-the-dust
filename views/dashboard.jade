@@ -1,7 +1,13 @@
 extend layout
 
 block content
-  #dashboard.snowy-mountains
+  #dashboard.snowy-mountains.movable
+    .snow
+    #viewport(data-viewport='left')
+      #left.navigation
+      #right.navigation
+    .protagonist.character.opposite
+
     .bot-249AD.character.target
-    .protagonist.character
-    .bot-249AD.character.target(style='left: 600px;')
+      ul.actions
+        li.talk

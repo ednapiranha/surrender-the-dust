@@ -9,17 +9,8 @@ html
     link(rel='stylesheet', href='/stylesheets/main.css')
 
   body(class='#{pageType}')
-    #header
-      h1 My Site
-
-    if session.email
-      a(href='/logout') Log out
-    else
-      form(method='post', action='/login', id='login-form')
-        a(href='#', id='login') Log in
-        input(type='hidden', name='bid_assertion', value='1')
-
-    block content
+    #main-wrapper
+      block content
     #footer
 
     script(src='/javascripts/jquery.min.js')

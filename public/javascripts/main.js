@@ -13,7 +13,7 @@ define(['jquery', 'movement'],
 
   var currentUser;
   var loginForm = $('form#login-form');
-
+/*
   loginForm.on('click', '#login', function() {
     navigator.id.request();
   });
@@ -26,10 +26,10 @@ define(['jquery', 'movement'],
     },
     onlogout: function() { }
   });
+*/
+  var viewport = $('.target, #viewport');
 
-  var target = $('.target');
-
-  target.click(function() {
-    movement.move($(this));
+  viewport.click(function(ev) {
+    movement.move(ev);
   });
 });
