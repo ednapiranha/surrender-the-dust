@@ -11,25 +11,16 @@ requirejs.config({
 define(['jquery', 'movement'],
   function($, movement) {
 
-  var currentUser;
-  var loginForm = $('form#login-form');
-/*
-  loginForm.on('click', '#login', function() {
-    navigator.id.request();
-  });
-
-  navigator.id.watch({
-    loggedInEmail: currentUser,
-    onlogin: function(assertion) {
-      loginForm.find('input[name="bid_assertion"]').val(assertion);
-      loginForm.submit();
-    },
-    onlogout: function() { }
-  });
-*/
-  var viewport = $('.target, #viewport');
+  var viewport = $('#viewport');
+  var target = $('.target');
 
   viewport.click(function(ev) {
     movement.move(ev);
+  });
+
+  target.click(function(ev) {
+    var self = $(this);
+
+    movement.withinRadius(ev, self);
   });
 });

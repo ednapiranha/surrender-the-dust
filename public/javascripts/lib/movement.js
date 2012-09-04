@@ -7,23 +7,32 @@ define(['jquery'], function ($) {
   var targets = $('.target');
   var viewport = $('#viewport');
   var movable = $('.movable');
-  var currPanel = 1;
+  var viewScreen = 1;
 
   var SPEED = 8;
   var RADIUS_MAX = 100;
-  var VIEWPORT_SPEED = 800;
+  var VIEWPORT_SPEED = 500;
   var VIEWPORT_LEFT = -10;
   var VIEWPORT_RIGHT = -750;
+  var VIEWPORT_PANEL_MIN = 1;
+  var VIEWPORT_PANEL_MAX = 3;
   var VICINITY = -30;
   var PROTAGONIST_LANDING = 120;
-  var MIN_PROTAGONIST_LEFT = 10;
-  var MAX_PROTAGONIST_RIGHT = 2290;
+  var MIN_PROTAGONIST_LEFT = 110;
+  var MAX_PROTAGONIST_RIGHT = 2140;
+  var PANEL_SWITCH_DISTANCE = PROTAGONIST_LANDING * 2;
 
   var moveProtagonist = function(toX, actionLength, callback) {
-    if (toX > MIN_PROTAGONIST_LEFT && toX < MAX_PROTAGONIST_RIGHT) {
-      isRunning = true;
-      protagonist.addClass('active');
-      protagonist.animate({
+    if (toX > MAX_PROTAGONIST_RIGHT) {
+      toX = MAX_PROTAGONIST_RIGHT;
+    } else if (toX < MIN_PROTAGONIST_LEFT) {
+      toX = MIN_PROTAGONIST_LEFT;
+    }
+
+    isRunning = true;
+    protagonist
+      .addClass('active')
+      .animate({
         left: toX
       },
       actionLength, 'linear', function() {
@@ -33,60 +42,57 @@ define(['jquery'], function ($) {
         }
         isRunning = false;
       });
-    }
   };
 
   var walkAcross = function(toX, actionLength, ev) {
     var currTarget = $(ev.target);
+    var viewAdjustment;
 
     if (currTarget.hasClass('navigation')) {
-      if (viewport.data('viewport') === 'left' && currTarget.attr('id') === 'right') {
-        moveProtagonist(toX + PROTAGONIST_LANDING, actionLength, function() {
-          moveViewPort(VIEWPORT_RIGHT);
-          currPanel = 2;
-          viewport.data('viewport', 'right');
-        });
-      } else if (viewport.data('viewport') === 'right' && currTarget.attr('id') === 'left') {
-        if (currPanel > 1) {
-          actionLength += 2000;
+      if (viewScreen === 1 && currTarget.attr('id') === 'right') {
+        viewAdjustment = VIEWPORT_RIGHT;
+        viewScreen = 2;
+
+      } else if (viewScreen > 1 && currTarget.attr('id') === 'left') {
+        // Add a distance buffer between panel switches for when the viewport moves.
+        toX -= PANEL_SWITCH_DISTANCE;
+        actionLength += PANEL_SWITCH_DISTANCE;
+
+        if (viewScreen > 2) {
+          viewAdjustment = VIEWPORT_RIGHT;
+          viewScreen = 2;
+
+        } else {
+          viewAdjustment = VIEWPORT_LEFT;
+          viewScreen = 1;
         }
 
-        if (currPanel === 3) {
-          moveProtagonist(toX - PROTAGONIST_LANDING, actionLength, function() {
-            moveViewPort(VIEWPORT_RIGHT);
-            currPanel = 2;
-            viewport.data('viewport', 'right');
-          });
-        } else {
-          moveProtagonist(toX - PROTAGONIST_LANDING, actionLength, function() {
-            moveViewPort(VIEWPORT_LEFT);
-            currPanel = 1;
-            viewport.data('viewport', 'left');
-          });
-        }
-      } else if (viewport.data('viewport') === 'right' && currTarget.attr('id') === 'right') {
-        moveProtagonist(toX + PROTAGONIST_LANDING, actionLength + 1000, function() {
-          moveViewPort(VIEWPORT_RIGHT * 2);
-          currPanel = 3;
-        });
+      } else if (viewScreen > 1 && currTarget.attr('id') === 'right') {
+        viewAdjustment = VIEWPORT_RIGHT * viewScreen;
+        viewScreen = 3;
       }
-      isRunning = false;
+
+      moveProtagonist(toX + PROTAGONIST_LANDING, actionLength, function() {
+        moveViewPort(viewAdjustment);
+      });
+
     } else {
       moveProtagonist(toX, actionLength);
     }
   };
 
   var moveViewPort = function(toX, callback) {
-    movable.animate({
-      marginLeft: toX
-    },
-    VIEWPORT_SPEED, function() {
-      protagonist.removeClass('active');
-      isRunning = false;
-      if (callback) {
-        callback();
-      }
-    });
+    if (toX * -1 < MAX_PROTAGONIST_RIGHT) {
+      movable.animate({
+        marginLeft: toX
+      },
+      VIEWPORT_SPEED, function() {
+        protagonist.removeClass('active');
+        if (callback) {
+          callback();
+        }
+      });
+    }
   };
 
   var self = {
@@ -101,9 +107,9 @@ define(['jquery'], function ($) {
         isRunning = true;
         protagonist.removeClass('active');
 
-        if (viewport.data('viewport') === 'right') {
-          toX += VIEWPORT_RIGHT * -1 * (currPanel - 1);
-          fromX += currPanel * -1;
+        if (viewScreen > 1) {
+          toX = toX + (VIEWPORT_RIGHT * -1 * (viewScreen - 1));
+          fromX = fromX + (viewScreen * -1);
         }
 
         // Moving right
@@ -120,6 +126,18 @@ define(['jquery'], function ($) {
         actionLength = difference * SPEED;
         toX += VICINITY;
         walkAcross(toX, actionLength, ev);
+      }
+    },
+
+    // Check to see if protagonist is within target radius
+    withinRadius: function(ev, selectedTarget) {
+      var target = ev.pageX;
+      var fromX = protagonist.position().left;
+
+      if (Math.abs(target - fromX) <= RADIUS_MAX) {
+        selectedTarget.addClass('actionable');
+      } else {
+        selectedTarget.removeClass('actionable');
       }
     }
   };
