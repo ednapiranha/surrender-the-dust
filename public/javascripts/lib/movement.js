@@ -21,6 +21,9 @@ define(['jquery'], function ($) {
   var MIN_PROTAGONIST_LEFT = 110;
   var MAX_PROTAGONIST_RIGHT = 2140;
   var PANEL_SWITCH_DISTANCE = PROTAGONIST_LANDING * 2;
+  var PANEL_FIRST = 1;
+  var PANEL_SECOND = 2;
+  var PANEL_THIRD = 3;
 
   var moveProtagonist = function(toX, actionLength, callback) {
     if (toX > MAX_PROTAGONIST_RIGHT) {
@@ -49,27 +52,27 @@ define(['jquery'], function ($) {
     var viewAdjustment;
 
     if (currTarget.hasClass('navigation')) {
-      if (viewScreen === 1 && currTarget.attr('id') === 'right') {
+      if (viewScreen === PANEL_FIRST && currTarget.attr('id') === 'right') {
         viewAdjustment = VIEWPORT_RIGHT;
-        viewScreen = 2;
+        viewScreen = PANEL_SECOND;
 
-      } else if (viewScreen > 1 && currTarget.attr('id') === 'left') {
+      } else if (viewScreen > PANEL_FIRST && currTarget.attr('id') === 'left') {
         // Add a distance buffer between panel switches for when the viewport moves.
         toX -= PANEL_SWITCH_DISTANCE;
         actionLength += PANEL_SWITCH_DISTANCE;
 
-        if (viewScreen > 2) {
+        if (viewScreen > PANEL_SECOND) {
           viewAdjustment = VIEWPORT_RIGHT;
-          viewScreen = 2;
+          viewScreen = PANEL_SECOND;
 
         } else {
           viewAdjustment = VIEWPORT_LEFT;
-          viewScreen = 1;
+          viewScreen = PANEL_FIRST;
         }
 
-      } else if (viewScreen > 1 && currTarget.attr('id') === 'right') {
+      } else if (viewScreen > PANEL_FIRST && currTarget.attr('id') === 'right') {
         viewAdjustment = VIEWPORT_RIGHT * viewScreen;
-        viewScreen = 3;
+        viewScreen = PANEL_THIRD;
       }
 
       moveProtagonist(toX + PROTAGONIST_LANDING, actionLength, function() {
@@ -107,7 +110,7 @@ define(['jquery'], function ($) {
         isRunning = true;
         protagonist.removeClass('active');
 
-        if (viewScreen > 1) {
+        if (viewScreen > PANEL_FIRST) {
           toX = toX + (VIEWPORT_RIGHT * -1 * (viewScreen - 1));
           fromX = fromX + (viewScreen * -1);
         }
