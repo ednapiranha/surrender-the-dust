@@ -1,0 +1,17 @@
+{
+    "location1": {
+        "name": "snowy-mountains",
+        "extra": "snow",
+        "characters": [
+            {
+                "name": "bot-249AD"
+            }
+        ],
+        "targets": [
+            {
+                "name": "/images/targets/snow-house.png",
+                "left": 50
+            }
+        ]
+    }
+}

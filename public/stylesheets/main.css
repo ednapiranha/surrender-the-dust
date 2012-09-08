@@ -48,6 +48,7 @@ table {
 }
 
 body {
+    background-color: #16282b;
     padding: 10px;
 }
 
@@ -101,6 +102,7 @@ body {
 
 /* Characters */
 .character {
+    display: block;
     position: absolute;
 }
 
@@ -120,14 +122,16 @@ body {
     100% { background-position: 0px; }
 }
 
+/* Protagonist */
 .protagonist {
     background-image: url('/images/characters/protagonist.png');
     background-repeat: no-repeat;
     background-position: -4px;
     height: 188px;
     left: 110px;
-    top: 270px;
+    top: 260px;
     width: 58px;
+    z-index: 2;
 }
 
 .protagonist.active {
@@ -161,10 +165,22 @@ body {
     -moz-animation: walk-opp .6s step-end infinite;
 }
 
-.target.actionable {
+/* Targets */
+.target {
+    position: absolute;
+}
+
+.actionable {
     cursor: pointer;
 }
 
+.inanimate {
+    bottom: 100px;
+    display: block;
+    z-index: 1;
+}
+
+/* Characters */
 @-webkit-keyframes anim {
     from { background-position: 0px; }
     to { background-position: -199px; }
@@ -175,21 +191,40 @@ body {
     to { background-position: -199px; }
 }
 
-.bot-249AD {
-    -webkit-animation: anim .2s steps(2, end) infinite;
-    -moz-animation: anim .2s steps(2, end) infinite;
+#bot-249AD {
+    -webkit-animation: anim .3s steps(2, end) infinite;
+    -moz-animation: anim .3s steps(2, end) infinite;
     background-image: url('/images/characters/bot-249AD.png');
     background-repeat: no-repeat;
     left: 530px;
-    top: 310px;
+    top: 300px;
     height: 175px;
     width: 100px;
+    z-index: 3;
+}
+
+#talk {
+    display: none;
+    background-color: #fff;
+    border-radius: 3px;
+    color: #222;
+    font-family: Arial;
+    font-size: 13px;
+    line-height: 16px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    text-align: center;
+    opacity: 0.9;
+    width: 760px;
+    padding: 5px 10px;
 }
 
 /* Scene: Snowy Mountains */
 .snowy-mountains {
     background-image: url('/images/scenes/snowy-mountains.jpg');
     background-repeat: no-repeat;
+    background-size: 100%;
 }
 
 .snowy-mountains .snow {

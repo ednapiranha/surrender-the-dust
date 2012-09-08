@@ -4,13 +4,12 @@ define(['jquery'], function ($) {
   var actionLength = 2000;
   var isRunning = false;
   var protagonist = $('.protagonist');
-  var targets = $('.target');
   var viewport = $('#viewport');
-  var movable = $('.movable');
+  var talk = $('#talk');
   var viewScreen = 1;
 
   var SPEED = 8;
-  var RADIUS_MAX = 100;
+  var RADIUS_MAX = 70;
   var VIEWPORT_SPEED = 500;
   var VIEWPORT_LEFT = -10;
   var VIEWPORT_RIGHT = -750;
@@ -52,11 +51,11 @@ define(['jquery'], function ($) {
     var viewAdjustment;
 
     if (currTarget.hasClass('navigation')) {
-      if (viewScreen === PANEL_FIRST && currTarget.attr('id') === 'right') {
+      if (viewScreen === PANEL_FIRST && currTarget[0].id === 'right') {
         viewAdjustment = VIEWPORT_RIGHT;
         viewScreen = PANEL_SECOND;
 
-      } else if (viewScreen > PANEL_FIRST && currTarget.attr('id') === 'left') {
+      } else if (viewScreen > PANEL_FIRST && currTarget[0].id === 'left') {
         // Add a distance buffer between panel switches for when the viewport moves.
         toX -= PANEL_SWITCH_DISTANCE;
         actionLength += PANEL_SWITCH_DISTANCE;
@@ -70,7 +69,7 @@ define(['jquery'], function ($) {
           viewScreen = PANEL_FIRST;
         }
 
-      } else if (viewScreen > PANEL_FIRST && currTarget.attr('id') === 'right') {
+      } else if (viewScreen > PANEL_FIRST && currTarget[0].id === 'right') {
         viewAdjustment = VIEWPORT_RIGHT * viewScreen;
         viewScreen = PANEL_THIRD;
       }
@@ -85,9 +84,11 @@ define(['jquery'], function ($) {
   };
 
   var moveViewPort = function(toX, callback) {
+    var movable = $('.movable');
+
     if (toX * -1 < MAX_PROTAGONIST_RIGHT) {
       movable.animate({
-        marginLeft: toX
+        marginLeft: toX + 'px'
       },
       VIEWPORT_SPEED, function() {
         protagonist.removeClass('active');
@@ -102,10 +103,12 @@ define(['jquery'], function ($) {
     // Move towards a target and stop in a specificed vicinity.
     move: function(ev) {
       if (!isRunning) {
+        var targets = $('.target');
         var toX = ev.pageX;
         var fromX = protagonist.position().left;
         var difference;
 
+        talk.fadeOut();
         targets.removeClass('actionable');
         isRunning = true;
         protagonist.removeClass('active');
@@ -133,14 +136,19 @@ define(['jquery'], function ($) {
     },
 
     // Check to see if protagonist is within target radius
-    withinRadius: function(ev, selectedTarget) {
+    withinRadius: function(ev, selectedTarget, callback) {
       var target = ev.pageX;
       var fromX = protagonist.position().left;
 
-      if (Math.abs(target - fromX) <= RADIUS_MAX) {
+      if (Math.abs(target - fromX + VICINITY) <= RADIUS_MAX ||
+          Math.abs(fromX - target + (VICINITY * -1)) <= RADIUS_MAX) {
         selectedTarget.addClass('actionable');
       } else {
         selectedTarget.removeClass('actionable');
+      }
+
+      if (callback) {
+        callback();
       }
     }
   };

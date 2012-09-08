@@ -8,19 +8,26 @@ requirejs.config({
   }
 });
 
-define(['jquery', 'movement'],
-  function($, movement) {
+define(['jquery', 'movement', 'actions'],
+  function($, movement, actions) {
 
-  var viewport = $('.target, #viewport');
-  var target = $('.target');
+  var dashboard = $('#dashboard');
 
-  viewport.click(function(ev) {
+  // Navigating around the viewport
+  dashboard.on('click', '#viewport', function(ev) {
+    var self = $(this);
+
     movement.move(ev);
   });
 
-  target.click(function(ev) {
+  // Activating speech on a target
+  dashboard.on('click', '.target', function(ev) {
     var self = $(this);
 
-    movement.withinRadius(ev, self);
+    movement.withinRadius(ev, self, function() {
+      if (self.hasClass('actionable')) {
+        actions.talk(self);
+      }
+    });
   });
 });
