@@ -12,19 +12,15 @@
                 "name": "/images/targets/snow-house.png",
                 "id": "snow-house",
                 "is_inventory": false,
+                "bottom": 100,
                 "left": 50
             },
             {
                 "name": "/images/targets/snow-car.png",
                 "id": "snow-car",
                 "is_inventory": false,
+                "bottom": 100,
                 "left": 950
-            },
-            {
-                "name": "/images/targets/scissors.png",
-                "id": "scissors",
-                "is_inventory": true,
-                "left": 980
             }
         ]
     }

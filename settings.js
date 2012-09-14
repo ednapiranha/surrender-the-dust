@@ -7,7 +7,13 @@ module.exports = function(app, configurations, express) {
 
   // Configuration
 
-  app.configure(function(){
+  app.configure(function() {
+    app.use(express.cookieParser());
+    app.use(express.session({
+      secret: nconf.get('session_secret'),
+      store: new MemoryStore({ reapInterval: 60000 * 10 }),
+      cookie: { maxAge: 990000000 } // 1 week-ish
+    }));
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.set('view options', { layout: false });
@@ -36,19 +42,22 @@ module.exports = function(app, configurations, express) {
   });
 
   app.configure('development', function() {
-    app.set('redis_surrender_the_dust', nconf.get('redis_dev'));
+    app.set('redis_dust', nconf.get('redis_dev'));
   });
 
   app.configure('test', function() {
-    app.set('redis_surrender_the_dust', nconf.get('redis_test'));
+    app.set('redis_dust', nconf.get('redis_test'));
   });
 
   app.configure('production', function() {
     app.use(express.errorHandler());
-    app.set('redis_surrender_the_dust', nconf.get('redis_prod'));
+    app.set('redis_dust', nconf.get('redis_prod'));
   });
 
   app.dynamicHelpers({
+    session: function (req, res) {
+      return req.session;
+    },
     messages: require('express-messages')
   });
 

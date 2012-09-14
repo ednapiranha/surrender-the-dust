@@ -105,7 +105,7 @@ define(['jquery'], function ($) {
     collectItem: function(self) {
       if (getPlayerTodo() === self[0].id) {
         setPlayerInventory(self[0].id);
-        self.remove();
+        self.fadeOut();
       }
     }
   };
