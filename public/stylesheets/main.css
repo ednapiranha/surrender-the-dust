@@ -129,7 +129,7 @@ body {
     background-position: -4px;
     height: 188px;
     left: 110px;
-    top: 260px;
+    top: 262px;
     width: 58px;
     z-index: 2;
 }
@@ -170,11 +170,11 @@ body {
     position: absolute;
 }
 
-.actionable {
+.actionable, .inventory {
     cursor: pointer;
 }
 
-.inanimate {
+.inanimate, .inventory {
     bottom: 100px;
     display: block;
     z-index: 1;

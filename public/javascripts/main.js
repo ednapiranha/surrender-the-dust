@@ -14,7 +14,7 @@ define(['jquery', 'movement', 'actions'],
   var dashboard = $('#dashboard');
 
   // Navigating around the viewport
-  dashboard.on('click', '#viewport', function(ev) {
+  dashboard.on('click', '#viewport, .target', function(ev) {
     var self = $(this);
 
     movement.move(ev);
@@ -27,6 +27,8 @@ define(['jquery', 'movement', 'actions'],
     movement.withinRadius(ev, self, function() {
       if (self.hasClass('actionable')) {
         actions.talk(self);
+      } else if (self.hasClass('inventory')) {
+        actions.collectItem(self);
       }
     });
   });

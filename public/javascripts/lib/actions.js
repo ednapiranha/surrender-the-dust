@@ -2,7 +2,7 @@
 
 define(['jquery'], function ($) {
   if (!localStorage.getItem('dust_inventory')) {
-    localStorage.setItem('dust_inventory', []);
+    localStorage.setItem('dust_inventory', JSON.stringify([]));
   }
 
   var talk = $('#talk');
@@ -14,11 +14,12 @@ define(['jquery'], function ($) {
     return parseInt(localStorage.getItem('dust_step'), 10) || 1;
   };
   var setPlayerInventory = function(item) {
-    localStorage.setItem('dust_inventory', getPlayerInventory().push(item));
+    localStorage.setItem('dust_inventory', JSON.stringify(getPlayerInventory().push(item)));
+    console.log(localStorage.getItem('dust_inventory'))
     localStorage.removeItem('dust_todo');
   };
   var getPlayerInventory = function() {
-    return localStorage.getItem('dust_inventory');
+    return JSON.parse(localStorage.getItem('dust_inventory'));
   };
   var setPlayerTodo = function(item) {
     localStorage.setItem('dust_todo', item);
@@ -36,8 +37,14 @@ define(['jquery'], function ($) {
   // Display all targets for the current step
   var displayTargets = function(targets) {
     for (var i = 0; i < targets.length; i ++) {
-      var img = $('<img src="" class="target inanimate" style="">');
+      var img = $('<img src="" class="target" id="" style="">');
+      if (!targets[i].is_inventory) {
+        img.addClass('inanimate');
+      } else {
+        img.addClass('inventory');
+      }
       img.attr('src', targets[i].name)
+        .attr('id', targets[i].id)
         .css({
           'left': targets[i].left + 'px'
         });
@@ -81,7 +88,7 @@ define(['jquery'], function ($) {
         url: '/talk/' + self[0].id,
         type: 'POST',
         data: {
-          requirement: getPlayerInventory() || undefined,
+          requirement: getPlayerInventory(),
           todo: getPlayerTodo() || undefined,
           step: getPlayerStep()
         },
@@ -93,6 +100,13 @@ define(['jquery'], function ($) {
         setPlayerStep(data['step']);
         setPlayerTodo(data['requirement']);
       });
+    },
+    // Collect inventory
+    collectItem: function(self) {
+      if (getPlayerTodo() === self[0].id) {
+        setPlayerInventory(self[0].id);
+        self.remove();
+      }
     }
   };
 
