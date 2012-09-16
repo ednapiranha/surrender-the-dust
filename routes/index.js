@@ -3,11 +3,23 @@
 module.exports = function(app, db) {
   var user = require('../lib/user');
   var talks = require('../config/characters');
+  var targets = require('../config/targets');
   var locations = require('../config/locations');
 
   app.get('/', function(req, res) {
     res.render('index', {
       pageType: 'index'
+    });
+  });
+
+  app.get('/reset', function(req, res) {
+    delete req.session.todo;
+    delete req.session.inventory;
+    delete req.session.location;
+    delete req.session.step;
+
+    user.saveStats(req, db, function() {
+      res.redirect('/dashboard');
     });
   });
 
@@ -34,12 +46,19 @@ module.exports = function(app, db) {
 
   app.get('/dashboard', function(req, res) {
     res.render('dashboard', {
+      location: req.session.location || 1,
       pageType: 'dashboard'
     });
   });
 
   app.get('/location/:id', function(req, res) {
     var location = 'location' + req.params.id;
+
+    if (req.session.todo && !req.session.inventory[req.session.todo] &&
+      parseInt(req.session.step, 10) === 2) {
+
+      locations[location].targets.push(targets[req.session.todo]);
+    }
 
     res.json({
       name: locations[location].name,
@@ -50,24 +69,53 @@ module.exports = function(app, db) {
   });
 
   app.post('/talk/:id', function(req, res) {
-    var talkState = talks[req.params.id]['step' + req.body.step];
-    var step = parseInt(talkState.step, 10) || 2;
+    var step = parseInt(req.session.step, 10);
+    var talkState = talks[req.params.id]['step' + step];
 
-    if (req.session.inventory[talkState.requirement]) {
-      step = 3;
+    if (step === 3) {
+      delete req.session.inventory[talkState.requirement];
+      req.session.step = 4;
+    } else if (step < 3) {
+      req.session.step = step = 2;
+
+      var targetArr = [];
+
+      talkState.targets.forEach(function(targetName) {
+        // If the location has already displayed this target, don't redisplay
+        // from the character interaction.
+        if (req.session.todo !== targetName) {
+          targetArr.push(targets[targetName]);
+        }
+      });
+
+      if (talkState.requirement) {
+        req.session.todo = talkState.requirement;
+      }
+    } else {
+      // This todo is over
+      req.session.step = 4;
     }
 
-    req.session.step = step;
+    user.saveStats(req, db, function(data) {
+      res.json({
+        talk: talkState.talk,
+        step: step,
+        requirement: talkState.requirement,
+        targets: targetArr
+      });
+    });
+  });
 
-    if (talkState.requirement) {
-      req.session.todo = talkState.requirement;
-    }
+  app.post('/collect', function(req, res) {
+    req.session.inventory[req.body.inventory] = true;
+    req.session.todo = null;
+    req.session.step = 3;
 
-    res.json({
-      talk: talkState.talk,
-      step: step,
-      requirement: talkState.requirement,
-      targets: talkState.targets
+    user.saveStats(req, db, function() {
+      res.json({
+        'inventory': req.session.inventory,
+        'todo': req.session.todo
+      });
     });
   });
 };

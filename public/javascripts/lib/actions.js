@@ -1,42 +1,14 @@
 'use strict';
 
 define(['jquery'], function ($) {
-  if (!localStorage.getItem('dust_inventory')) {
-    localStorage.setItem('dust_inventory', JSON.stringify([]));
-  }
-
-  var talk = $('#talk');
-  var dashboard = $('#dashboard');
-  var setPlayerStep = function(step) {
-    localStorage.setItem('dust_step', parseInt(step, 10));
-  };
-  var getPlayerStep = function() {
-    return parseInt(localStorage.getItem('dust_step'), 10) || 1;
-  };
-  var setPlayerInventory = function(item) {
-    localStorage.setItem('dust_inventory', JSON.stringify(getPlayerInventory().push(item)));
-    localStorage.removeItem('dust_todo');
-  };
-  var getPlayerInventory = function() {
-    return JSON.parse(localStorage.getItem('dust_inventory'));
-  };
-  var setPlayerTodo = function(item) {
-    localStorage.setItem('dust_todo', item);
-  };
-  var getPlayerTodo = function() {
-    return localStorage.getItem('dust_todo');
-  };
-  var setLocation = function(location) {
-    localStorage.setItem('dust_location', location);
-  };
-  var getLocation = function() {
-    return localStorage.getItem('dust_location') || 1;
-  };
+  var body = $('body');
+  var talk = body.find('#talk');
+  var dashboard = body.find('#dashboard');
 
   // Display all targets for the current step
-  var displayTargets = function(targets) {
+  var displayTargets = function(targets, profile) {
     for (var i = 0; i < targets.length; i ++) {
-      if (!getPlayerInventory[targets[i].id]) {
+      if (!profile.inventory[targets[i].id]) {
         var img = $('<img src="" class="target" id="" style="">');
         if (!targets[i].is_inventory) {
           img.addClass('inanimate');
@@ -46,11 +18,10 @@ define(['jquery'], function ($) {
         img.attr('src', targets[i].name)
           .attr('id', targets[i].id)
           .css({
-            'left': targets[i].left + 'px'
+            'left': targets[i].left + 'px',
+            'bottom': targets[i].bottom + 'px'
           });
         dashboard.append(img);
-      } else {
-        console.log('already have inventory item ', targets[i].id)
       }
     }
   };
@@ -62,29 +33,25 @@ define(['jquery'], function ($) {
       character[0].id = characters[i].name;
       dashboard.append(character);
     }
-  }
-
-  // Display current location
-  var displayLocation = function() {
-    $.ajax({
-      url: '/location/' + getLocation(),
-      type: 'GET',
-      dataType: 'json'
-
-    }).done(function(data) {
-      dashboard.removeClass()
-        .addClass('movable')
-        .addClass(data['name']);
-      dashboard.find('#extra').addClass(data['extra']);
-      displayCharacters(data['characters']);
-      displayTargets(data['targets']);
-    });
-  }
-
-  // Preload location
-  displayLocation();
+  };
 
   var self = {
+    // Display current location
+    displayLocation: function(profile) {
+      $.ajax({
+        url: '/location/' + body.data('location'),
+        type: 'GET',
+        dataType: 'json'
+
+      }).done(function(data) {
+        dashboard.removeClass()
+          .addClass('movable')
+          .addClass(data['name']);
+        dashboard.find('#extra').addClass(data['extra']);
+        displayCharacters(data['characters']);
+        displayTargets(data['targets'], profile);
+      });
+    },
     // Get a message
     talk: function(self, profile) {
       $.ajax({
@@ -100,15 +67,37 @@ define(['jquery'], function ($) {
         talk.text(data['talk']);
         talk.fadeIn();
         profile.step = data['step'];
-        profile.todo = data['requirement'];
-        displayTargets(data['targets']);
+
+        if (data['requirement']) {
+          profile.todo = data['requirement'];
+        }
+
+        if (data['targets']) {
+          displayTargets(data['targets'], profile);
+        }
+
+        return profile;
       });
     },
     // Collect inventory
     collectItem: function(self, profile) {
       if (profile.todo === self[0].id) {
-        profile.step = self[0].id;
-        self.fadeOut();
+        $.ajax({
+          url: '/collect',
+          type: 'POST',
+          data: {
+            inventory: self[0].id
+          },
+          dataType: 'json'
+
+        }).done(function(data) {
+          profile = data.inventory;
+          profile.todo = data.todo;
+          profile.step = data.step;
+          self.fadeOut();
+
+          return profile;
+        });
       }
     }
   };

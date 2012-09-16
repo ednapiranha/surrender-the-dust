@@ -15,7 +15,6 @@ define(['jquery', 'movement', 'actions'],
   var login = $('#login');
   var logout = $('#logout');
 
-  // User profile attributes
   var profile = {};
 
   // Initialize on load
@@ -26,7 +25,8 @@ define(['jquery', 'movement', 'actions'],
       todo: data.todo,
       location: data.location
     };
-    console.log(profile)
+
+    actions.displayLocation(profile);
   });
 
   login.click(function(ev) {
@@ -85,9 +85,13 @@ define(['jquery', 'movement', 'actions'],
 
     movement.withinRadius(ev, self, function() {
       if (self.hasClass('actionable')) {
-        actions.talk(self, profile);
+        actions.talk(self, profile, function(data) {
+          profile = data;
+        });
       } else if (self.hasClass('inventory')) {
-        actions.collectItem(self, profile);
+        actions.collectItem(self, profile, function(data) {
+          profile = data;
+        });
       }
     });
   });

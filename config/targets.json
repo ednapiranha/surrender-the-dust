@@ -1,0 +1,9 @@
+{
+    "scissors": {
+        "name": "/images/targets/scissors.png",
+        "id": "scissors",
+        "is_inventory": true,
+        "bottom": 100,
+        "left": 990
+    }
+}
