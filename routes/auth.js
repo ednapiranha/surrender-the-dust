@@ -1,8 +1,8 @@
 'use strict';
 
-var auth = require('../lib/authenticate');
+module.exports = function(app, db, nconf, isLoggedIn) {
+  var auth = require('../lib/authenticate');
 
-module.exports = function(client, nconf, app, io, isLoggedIn) {
   // Login
   app.post('/login', function(req, res) {
     auth.verify(req, nconf, function(err, email) {

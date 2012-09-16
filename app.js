@@ -10,8 +10,17 @@ var settings = require('./settings')(app, configurations, express);
 
 nconf.argv().env().file({ file: 'local.json' });
 
+var isLoggedIn = function(req, res, next) {
+  if (req.session.email) {
+    next();
+  } else {
+    res.redirect('/');
+  }
+};
+
 // routes
-require("./routes")(app, db);
+require('./routes')(app, db, isLoggedIn);
+require('./routes/auth')(app, db, nconf, isLoggedIn);
 
 app.get('/404', function(req, res, next){
   next();

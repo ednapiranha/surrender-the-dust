@@ -3,7 +3,7 @@
         "step1": {
             "talk": "Hey there! I don't think we have met! Do you think you could do me a favour and find me a pair of scissors? I need to use them to cut some scraps.",
             "requirement": "scissors",
-             "targets": [
+            "targets": [
                 {
                     "name": "/images/targets/scissors.png",
                     "id": "scissors",
@@ -14,8 +14,7 @@
             ]
         },
         "step2": {
-            "talk": "Did you find me those scissors?",
-            "requirement": "scissors"
+            "talk": "Did you find me those scissors?"
         },
         "step3": {
             "talk": "Thanks for getting me a pair of scissors!"

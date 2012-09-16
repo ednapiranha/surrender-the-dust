@@ -15,7 +15,6 @@ define(['jquery'], function ($) {
   };
   var setPlayerInventory = function(item) {
     localStorage.setItem('dust_inventory', JSON.stringify(getPlayerInventory().push(item)));
-    console.log(localStorage.getItem('dust_inventory'))
     localStorage.removeItem('dust_todo');
   };
   var getPlayerInventory = function() {
@@ -37,18 +36,22 @@ define(['jquery'], function ($) {
   // Display all targets for the current step
   var displayTargets = function(targets) {
     for (var i = 0; i < targets.length; i ++) {
-      var img = $('<img src="" class="target" id="" style="">');
-      if (!targets[i].is_inventory) {
-        img.addClass('inanimate');
+      if (!getPlayerInventory[targets[i].id]) {
+        var img = $('<img src="" class="target" id="" style="">');
+        if (!targets[i].is_inventory) {
+          img.addClass('inanimate');
+        } else {
+          img.addClass('inventory');
+        }
+        img.attr('src', targets[i].name)
+          .attr('id', targets[i].id)
+          .css({
+            'left': targets[i].left + 'px'
+          });
+        dashboard.append(img);
       } else {
-        img.addClass('inventory');
+        console.log('already have inventory item ', targets[i].id)
       }
-      img.attr('src', targets[i].name)
-        .attr('id', targets[i].id)
-        .css({
-          'left': targets[i].left + 'px'
-        });
-      dashboard.append(img);
     }
   };
 
@@ -83,28 +86,28 @@ define(['jquery'], function ($) {
 
   var self = {
     // Get a message
-    talk: function(self) {
+    talk: function(self, profile) {
       $.ajax({
         url: '/talk/' + self[0].id,
         type: 'POST',
         data: {
-          requirement: getPlayerInventory(),
-          todo: getPlayerTodo() || undefined,
-          step: getPlayerStep()
+          todo: profile.todo,
+          step: profile.step
         },
         dataType: 'json'
 
       }).done(function(data) {
         talk.text(data['talk']);
         talk.fadeIn();
-        setPlayerStep(data['step']);
-        setPlayerTodo(data['requirement']);
+        profile.step = data['step'];
+        profile.todo = data['requirement'];
+        displayTargets(data['targets']);
       });
     },
     // Collect inventory
-    collectItem: function(self) {
-      if (getPlayerTodo() === self[0].id) {
-        setPlayerInventory(self[0].id);
+    collectItem: function(self, profile) {
+      if (profile.todo === self[0].id) {
+        profile.step = self[0].id;
         self.fadeOut();
       }
     }

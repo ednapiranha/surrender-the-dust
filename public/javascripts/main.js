@@ -15,6 +15,20 @@ define(['jquery', 'movement', 'actions'],
   var login = $('#login');
   var logout = $('#logout');
 
+  // User profile attributes
+  var profile = {};
+
+  // Initialize on load
+  $.get('/profile', function(data) {
+    profile = {
+      step: data.step,
+      inventory: data.inventory,
+      todo: data.todo,
+      location: data.location
+    };
+    console.log(profile)
+  });
+
   login.click(function(ev) {
     ev.preventDefault();
     navigator.id.request();
@@ -71,9 +85,9 @@ define(['jquery', 'movement', 'actions'],
 
     movement.withinRadius(ev, self, function() {
       if (self.hasClass('actionable')) {
-        actions.talk(self);
+        actions.talk(self, profile);
       } else if (self.hasClass('inventory')) {
-        actions.collectItem(self);
+        actions.collectItem(self, profile);
       }
     });
   });
