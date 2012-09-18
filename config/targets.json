@@ -5,5 +5,12 @@
         "is_inventory": true,
         "bottom": 100,
         "left": 990
+    },
+    "fuel": {
+        "name": "/images/targets/scissors.png",
+        "id": "fuel",
+        "is_inventory": true,
+        "bottom": 100,
+        "left": 290
     }
 }

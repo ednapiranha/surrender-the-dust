@@ -6,10 +6,11 @@ define(['jquery'], function ($) {
   var protagonist = $('.protagonist');
   var viewport = $('#viewport');
   var talk = $('#talk');
+  var targets = $('.target');
   var viewScreen = 1;
 
   var SPEED = 8;
-  var RADIUS_MAX = 70;
+  var RADIUS_MAX = 90;
   var VIEWPORT_SPEED = 500;
   var VIEWPORT_LEFT = -10;
   var VIEWPORT_RIGHT = -750;
@@ -103,7 +104,6 @@ define(['jquery'], function ($) {
     // Move towards a target and stop in a specificed vicinity.
     move: function(ev) {
       if (!isRunning) {
-        var targets = $('.target');
         var toX = ev.pageX;
         var fromX = protagonist.position().left;
         var difference;
@@ -136,8 +136,8 @@ define(['jquery'], function ($) {
     },
 
     // Check to see if protagonist is within target radius
-    withinRadius: function(ev, selectedTarget, callback) {
-      var target = ev.pageX;
+    withinRadius: function(selectedTarget, callback) {
+      var target = selectedTarget.position().left;
       var fromX = protagonist.position().left;
 
       if (Math.abs(target - fromX + VICINITY) <= RADIUS_MAX ||

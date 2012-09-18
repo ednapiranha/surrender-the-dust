@@ -80,10 +80,10 @@ define(['jquery', 'movement', 'actions'],
   });
 
   // Activating speech on a target
-  dashboard.on('click', '.target', function(ev) {
+  dashboard.on('click', '.target', function() {
     var self = $(this);
 
-    movement.withinRadius(ev, self, function() {
+    movement.withinRadius(self, function() {
       if (self.hasClass('actionable')) {
         actions.talk(self, profile, function(data) {
           profile = data;
