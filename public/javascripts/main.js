@@ -90,7 +90,9 @@ define(['jquery', 'movement', 'actions'],
   dashboard.on('click', '#viewport, .target', function(ev) {
     var self = $(this);
 
-    movement.move(ev);
+    if (!self.hasClass('character')) {
+      movement.move(ev);
+    }
   });
 
   // Activating speech on a target

@@ -164,8 +164,9 @@ define(['jquery'], function ($) {
     // Hide inventory
     hideInventory: function() {
       inventory
-        .fadeOut();
-      isRunning = false;
+        .fadeOut(function() {
+          isRunning = false;
+        });
     }
   };
 
