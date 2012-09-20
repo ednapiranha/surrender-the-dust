@@ -18,6 +18,7 @@ module.exports = function(app, db) {
     delete req.session.location;
     delete req.session.step;
     delete req.session.level;
+    delete req.session.completed;
 
     user.saveStats(req, db, function() {
       res.redirect('/dashboard');
@@ -39,7 +40,8 @@ module.exports = function(app, db) {
           step: req.session.step,
           inventory: req.session.inventory,
           location: req.session.location,
-          todo: req.session.todo
+          todo: req.session.todo,
+          completed: req.session.completed
         });
       }
     });
@@ -57,7 +59,6 @@ module.exports = function(app, db) {
 
     if (req.session.todo && !req.session.inventory[req.session.todo] &&
       parseInt(req.session.step, 10) === 2) {
-
       locations[location].targets.push(targets[req.session.todo]);
     }
 
@@ -72,33 +73,41 @@ module.exports = function(app, db) {
   app.post('/talk/:id', function(req, res) {
     var step = parseInt(req.session.step, 10);
     var talkState = talks[req.params.id]['step' + step];
+    var targetArr = [];
     var currentLevel = parseInt(req.session.level, 10);
-    console.log(req.session)
-    if (step === 3) {
-      delete req.session.inventory[talkState.requirement];
-      req.session.level = parseInt(req.session.level, 10) + 1;
-      req.session.step = 1;
-
-    } else if (step < 3 && currentLevel <= talkState.min_level) {
-      req.session.step = step = 2;
-
-      var targetArr = [];
-
-      talkState.targets.forEach(function(targetName) {
-        // If the location has already displayed this target, don't redisplay
-        // from the character interaction.
-        if (req.session.todo !== targetName) {
-          targetArr.push(targets[targetName]);
-        }
-      });
-
-      if (talkState.requirement) {
-        req.session.todo = talkState.requirement;
-      }
-    } else {
-      // We've moved to the next level and should not restart this todo.
+    var endTalkState = function() {
+      // We've moved to the next level or we aren't ready to get
+      // to this level and should not restart this todo.
       talkState = talks[req.params.id]['step4'];
-      req.session.step = 1;
+    };
+    console.log(req.session)
+
+    if (currentLevel !== talkState.min_level) {
+      endTalkState();
+    } else  {
+      if (step === 3) {
+        delete req.session.inventory[talkState.requirement];
+        req.session.completed[talkState.requirement] = true;
+        req.session.level = parseInt(req.session.level, 10) + 1;
+        req.session.step = 1;
+
+      } else if (step < 3) {
+        req.session.step = step = 2;
+        talkState.targets.forEach(function(targetName) {
+          // If the location has already displayed this target, don't redisplay
+          // from the character interaction.
+          if (req.session.todo !== targetName) {
+            targetArr.push(targets[targetName]);
+          }
+        });
+
+        if (talkState.requirement) {
+          req.session.todo = talkState.requirement;
+        }
+      } else {
+        endTalkState();
+        req.session.step = 1;
+      }
     }
 
     user.saveStats(req, db, function(data) {

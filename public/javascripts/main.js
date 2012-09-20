@@ -23,7 +23,8 @@ define(['jquery', 'movement', 'actions'],
       step: data.step,
       inventory: data.inventory,
       todo: data.todo,
-      location: data.location
+      location: data.location,
+      completed: data.completed
     };
 
     actions.displayLocation(profile);

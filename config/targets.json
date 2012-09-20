@@ -7,10 +7,10 @@
         "left": 990
     },
     "fuel": {
-        "name": "/images/targets/scissors.png",
+        "name": "/images/targets/fuel.png",
         "id": "fuel",
         "is_inventory": true,
-        "bottom": 100,
-        "left": 290
+        "bottom": 110,
+        "left": 120
     }
 }

@@ -7,21 +7,28 @@ define(['jquery'], function ($) {
 
   // Display all targets for the current step
   var displayTargets = function(targets, profile) {
+    var step = parseInt(profile.step, 10);
+    var addImg = function(img) {
+      img.attr('src', targets[i].name)
+        .attr('id', targets[i].id)
+        .css({
+          'left': targets[i].left + 'px',
+          'bottom': targets[i].bottom + 'px'
+        });
+      dashboard.append(img);
+    };
+
     for (var i = 0; i < targets.length; i ++) {
-      if (!profile.inventory[targets[i].id]) {
+      if (!profile.inventory[targets[i].id] &&
+          !profile.completed[targets[i].id]) {
         var img = $('<img src="" class="target" id="" style="">');
         if (!targets[i].is_inventory) {
           img.addClass('inanimate');
-        } else {
+          addImg(img);
+        } else if (step === 2) {
           img.addClass('inventory');
+          addImg(img);
         }
-        img.attr('src', targets[i].name)
-          .attr('id', targets[i].id)
-          .css({
-            'left': targets[i].left + 'px',
-            'bottom': targets[i].bottom + 'px'
-          });
-        dashboard.append(img);
       }
     }
   };
@@ -81,6 +88,7 @@ define(['jquery'], function ($) {
     },
     // Collect inventory
     collectItem: function(self, profile) {
+      console.log('got here ', profile.todo, self[0].id)
       if (profile.todo === self[0].id) {
         $.ajax({
           url: '/collect',
