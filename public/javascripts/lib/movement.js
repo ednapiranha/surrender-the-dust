@@ -6,6 +6,7 @@ define(['jquery'], function ($) {
   var protagonist = $('.protagonist');
   var viewport = $('#viewport');
   var talk = $('#talk');
+  var inventory = $('.cloudy');
   var targets = $('.target');
   var viewScreen = 1;
 
@@ -150,6 +151,21 @@ define(['jquery'], function ($) {
       if (callback) {
         callback();
       }
+    },
+
+    // Show inventory
+    showInventory: function() {
+      isRunning = true;
+      inventory
+        .css({ zIndex: 5 })
+        .fadeIn();
+    },
+
+    // Hide inventory
+    hideInventory: function() {
+      inventory
+        .fadeOut();
+      isRunning = false;
     }
   };
 

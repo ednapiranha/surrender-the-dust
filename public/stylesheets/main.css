@@ -77,10 +77,6 @@ body {
 }
 
 /* Viewport */
-.viewport-wrapper {
-
-}
-
 #viewport {
     box-shadow: inset #111 0px 0px 25px;
     border-radius: 8px;
@@ -104,10 +100,50 @@ body {
 
 #left {
     float: left;
+    border-top-left-radius: 6px;
 }
 
 #right {
     float: right;
+    border-top-right-radius: 6px;
+}
+
+/* User Bar */
+
+#userbar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 780px;
+    padding: 10px 5px;
+    height: 20px;
+    background-color: #111;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: #fff;
+    opacity: 0.9;
+    z-index: 2;
+}
+
+#userbar a {
+    color: #fff;
+    padding: 0px 10px;
+    text-decoration: none;
+}
+
+#userbar a:hover {
+    text-shadow: #7fdfd9 0px 0px 5px;
+}
+
+.cloudy {
+    background-image: url('/images/scenes/cloud.png');
+    background-repeat: no-repeat;
+    width: 700px;
+    height: 400px;
+    position: absolute;
+    top: 45px;
+    left: 40px;
+    display: none;
 }
 
 /* Characters */

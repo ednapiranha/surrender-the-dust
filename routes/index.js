@@ -80,7 +80,6 @@ module.exports = function(app, db) {
       // to this level and should not restart this todo.
       talkState = talks[req.params.id]['step4'];
     };
-    console.log(req.session)
 
     if (currentLevel !== talkState.min_level) {
       endTalkState();

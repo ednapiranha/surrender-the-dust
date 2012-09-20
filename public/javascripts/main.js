@@ -71,6 +71,19 @@ define(['jquery', 'movement', 'actions'],
   });
   */
 
+  // Userbar toggle
+  var userbar = $('#userbar');
+  var cloudy = $('.cloudy');
+
+  userbar.find('.inventory').click(function(ev) {
+    ev.preventDefault();
+    movement.showInventory();
+  });
+
+  cloudy.find('.close').click(function() {
+    movement.hideInventory();
+  });
+
   var dashboard = $('#dashboard');
 
   // Navigating around the viewport
