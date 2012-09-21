@@ -101,6 +101,15 @@ define(['jquery'], function ($) {
     }
   };
 
+  var loadInventory = function(profile) {
+    inventory.find('.cloudy-content').html('');
+    for(var name in profile.inventory) {
+      var targetImg = '<img src="' + profile.inventory[name].name +
+                      '" id="' + name + '">';
+      inventory.find('.cloudy-content').append(targetImg);
+    }
+  };
+
   var self = {
     // Move towards a target and stop in a specificed vicinity.
     move: function(ev) {
@@ -154,11 +163,13 @@ define(['jquery'], function ($) {
     },
 
     // Show inventory
-    showInventory: function() {
+    showInventory: function(profile) {
       isRunning = true;
       inventory
         .css({ zIndex: 5 })
-        .fadeIn();
+        .fadeIn(function() {
+          loadInventory(profile);
+        });
     },
 
     // Hide inventory

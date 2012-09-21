@@ -19,13 +19,13 @@ define(['jquery'], function ($) {
     };
 
     for (var i = 0; i < targets.length; i ++) {
-      if (!profile.inventory[targets[i].id] &&
+      var img = $('<img src="" class="target" id="" style="">');
+      if (!targets[i].is_inventory) {
+        img.addClass('inanimate');
+        addImg(img);
+      } else {
+        if (!profile.inventory[targets[i].id] &&
           !profile.completed[targets[i].id]) {
-        var img = $('<img src="" class="target" id="" style="">');
-        if (!targets[i].is_inventory) {
-          img.addClass('inanimate');
-          addImg(img);
-        } else if (step === 2) {
           img.addClass('inventory');
           addImg(img);
         }
@@ -74,6 +74,7 @@ define(['jquery'], function ($) {
         talk.text(data['talk']);
         talk.fadeIn();
         profile.step = data['step'];
+        profile.inventory = data['inventory'];
 
         if (data['requirement']) {
           profile.todo = data['requirement'];
@@ -88,25 +89,22 @@ define(['jquery'], function ($) {
     },
     // Collect inventory
     collectItem: function(self, profile) {
-      console.log('got here ', profile.todo, self[0].id)
-      if (profile.todo === self[0].id) {
-        $.ajax({
-          url: '/collect',
-          type: 'POST',
-          data: {
-            inventory: self[0].id
-          },
-          dataType: 'json'
+      $.ajax({
+        url: '/collect',
+        type: 'POST',
+        data: {
+          inventory: self[0].id
+        },
+        dataType: 'json'
 
-        }).done(function(data) {
-          profile = data.inventory;
-          profile.todo = data.todo;
-          profile.step = data.step;
-          self.fadeOut();
+      }).done(function(data) {
+        profile.inventory = data.inventory;
+        profile.todo = data.todo;
+        profile.step = data.step;
+        self.fadeOut();
 
-          return profile;
-        });
-      }
+        return profile;
+      });
     }
   };
 

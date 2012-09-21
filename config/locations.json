@@ -11,20 +11,9 @@
             }
         ],
         "targets": [
-            {
-                "name": "/images/targets/snow-house.png",
-                "id": "snow-house",
-                "is_inventory": false,
-                "bottom": 100,
-                "left": 50
-            },
-            {
-                "name": "/images/targets/snow-car.png",
-                "id": "snow-car",
-                "is_inventory": false,
-                "bottom": 100,
-                "left": 950
-            }
+            "snow-house",
+            "snow-car",
+            "equip_recipe1"
         ]
     }
 }

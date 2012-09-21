@@ -1,8 +1,23 @@
 {
+    "snow-house": {
+        "name": "/images/targets/snow-house.png",
+        "id": "snow-house",
+        "is_inventory": false,
+        "bottom": 100,
+        "left": 50
+    },
+    "snow-car": {
+        "name": "/images/targets/snow-car.png",
+        "id": "snow-car",
+        "is_inventory": false,
+        "bottom": 100,
+        "left": 950
+    },
     "scissors": {
         "name": "/images/targets/scissors.png",
         "id": "scissors",
         "is_inventory": true,
+        "message": null,
         "bottom": 100,
         "left": 990
     },
@@ -10,7 +25,16 @@
         "name": "/images/targets/fuel.png",
         "id": "fuel",
         "is_inventory": true,
+        "message": null,
         "bottom": 110,
         "left": 120
+    },
+    "equip_recipe1": {
+        "name": "/images/targets/recipe-thumb.png",
+        "id": "equip_recipe1",
+        "message": "<ul><li>fuel</li></ul>",
+        "is_inventory": true,
+        "bottom": 140,
+        "left": 150
     }
 }

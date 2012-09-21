@@ -56,21 +56,27 @@ module.exports = function(app, db) {
 
   app.get('/location/:id', function(req, res) {
     var location = 'location' + req.params.id;
+    var targetArr = [];
+
+    locations[location].targets.forEach(function(target) {
+      targetArr.push(targets[target]);
+    });
 
     if (req.session.todo && !req.session.inventory[req.session.todo] &&
       parseInt(req.session.step, 10) === 2) {
-      locations[location].targets.push(targets[req.session.todo]);
+      targetArr.push(targets[req.session.todo]);
     }
 
     res.json({
       name: locations[location].name,
       extra: locations[location].extra,
       characters: locations[location].characters,
-      targets: locations[location].targets
+      targets: targetArr
     });
   });
 
   app.post('/talk/:id', function(req, res) {
+    console.log(req.session)
     var step = parseInt(req.session.step, 10);
     var talkState = talks[req.params.id]['step' + step];
     var targetArr = [];
@@ -115,15 +121,18 @@ module.exports = function(app, db) {
         step: step,
         requirement: talkState.requirement,
         targets: targetArr,
-        characters: talkState.characters
+        characters: talkState.characters,
+        inventory: req.session.inventory
       });
     });
   });
 
   app.post('/collect', function(req, res) {
-    req.session.inventory[req.body.inventory] = true;
-    req.session.todo = null;
-    req.session.step = 3;
+    req.session.inventory[req.body.inventory] = targets[req.body.inventory];
+    if (req.body.inventory.indexOf('equip_') === -1) {
+      req.session.step = 3;
+      req.session.todo = null;
+    }
 
     user.saveStats(req, db, function() {
       res.json({

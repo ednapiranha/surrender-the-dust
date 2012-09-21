@@ -73,14 +73,15 @@ define(['jquery', 'movement', 'actions'],
 
   // Userbar toggle
   var userbar = $('#userbar');
-  var cloudy = $('.cloudy');
+  var inventory = $('.cloudy');
 
   userbar.find('.inventory').click(function(ev) {
     ev.preventDefault();
-    movement.showInventory();
+    movement.showInventory(profile);
   });
 
-  cloudy.find('.close').click(function() {
+  inventory.find('.close').click(function(ev) {
+    ev.preventDefault();
     movement.hideInventory();
   });
 
@@ -90,7 +91,7 @@ define(['jquery', 'movement', 'actions'],
   dashboard.on('click', '#viewport, .target', function(ev) {
     var self = $(this);
 
-    if (!self.hasClass('character')) {
+    if (!self.hasClass('actionable')) {
       movement.move(ev);
     }
   });

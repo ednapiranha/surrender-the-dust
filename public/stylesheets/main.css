@@ -138,12 +138,48 @@ body {
 .cloudy {
     background-image: url('/images/scenes/cloud.png');
     background-repeat: no-repeat;
-    width: 700px;
-    height: 400px;
+    width: 580px;
+    height: 280px;
     position: absolute;
+    padding: 60px;
     top: 45px;
     left: 40px;
     display: none;
+}
+
+.cloudy-content {
+    width: 530px;
+    margin: 0 auto;
+    height: 265px;
+    overflow: auto;
+}
+
+.cloudy img {
+    margin: 3px;
+    max-height: 35px;
+    max-width: 35px;
+}
+
+.cloudy .close {
+    color: #f00;
+    display: block;
+    position: absolute;
+    right: 30px;
+    bottom: 0px;
+    text-decoration: none;
+    font-size: 40px;
+    line-height: 30px;
+    padding: 13px 15px 0;
+    text-shadow: #111 1px 1px 2px;
+    text-transform: uppercase;
+    width: 51px;
+    height: 51px;
+}
+
+.cloudy .close:hover {
+    background-image: url('/images/etc/close-button.png');
+    background-repeat: no-repeat;
+    color: #fff;
 }
 
 /* Characters */
